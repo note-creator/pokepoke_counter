@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ポケポケ勝敗カウンター</title>
+</head>
+<body>
+  <h1>ポケポケ勝敗カウンター</h1>
+
+  <label>初期ポイント: <input type="number" id="startPoint" value="1000"></label>
+  <button onclick="setStartPoint()">設定</button>
+
+  <p id="currentPoint">現在のポイント: 1000</p>
+  <p id="rankName">現在のランク: マスターボール</p>
+  <p id="compactView">1000Pt（マスターボール）</p>
+
+  <button onclick="win()">勝ち</button>
+  <button onclick="lose()">負け</button>
+  <button onclick="draw()">引き分け</button>
+
+  <script>
+    let point = 1000;
+    let winStreak = 0;
+
+    function setStartPoint() {
+      point = parseInt(document.getElementById('startPoint').value);
+      winStreak = 0;
+      updateDisplay();
+    }
+
+    function win() {
+      winStreak++;
+      let bonus = 0;
+      if (winStreak >= 2) bonus = (winStreak - 1) * 3;
+      point += 10 + bonus;
+      updateDisplay();
+    }
+
+    function lose() {
+      const rank = getRankName(point);
+      if (rank.startsWith("ビギナー")) {
+        // 変動なし
+      } else if (rank.startsWith("モンスターボール") || rank.startsWith("スーパーボール")) {
+        point -= 5;
+      } else if (rank.startsWith("ハイパーボール")) {
+        point -= 7;
+      } else if (rank.startsWith("マスターボール")) {
+        point -= 10;
+      }
+      winStreak = 0;
+      point = Math.max(point, getRankMin(point)); // 降格防止
+      updateDisplay();
+    }
+
+    function draw() {
+      winStreak = 0;
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      const rank = getRankName(point);
+      document.getElementById('currentPoint').textContent = `現在のポイント: ${point}`;
+      document.getElementById('rankName').textContent = `現在のランク: ${rank}`;
+      document.getElementById('compactView').textContent = `${point}Pt（${rank}）`;
+    }
+
+    function getRankName(p) {
+      const ranks = [
+        { name: "マスターボール", min: 1450 },
+        { name: "ハイパーボール4", min: 1230 },
+        { name: "ハイパーボール3", min: 1010 },
+        { name: "ハイパーボール2", min: 860 },
+        { name: "ハイパーボール1", min: 710 },
+        { name: "スーパーボール4", min: 600 },
+        { name: "スーパーボール3", min: 490 },
+        { name: "スーパーボール2", min: 420 },
+        { name: "スーパーボール1", min: 355 },
+        { name: "モンスターボール4", min: 300 },
+        { name: "モンスターボール3", min: 245 },
+        { name: "モンスターボール2", min: 195 },
+        { name: "モンスターボール1", min: 145 },
+        { name: "ビギナー4", min: 95 },
+        { name: "ビギナー3", min: 50 },
+        { name: "ビギナー2", min: 20 },
+        { name: "ビギナー1", min: 0 }
+      ];
+      for (let rank of ranks) {
+        if (p >= rank.min) return rank.name;
+      }
+      return "ビギナー1";
+    }
+
+    function getRankMin(p) {
+      const ranks = [
+        { name: "マスターボール", min: 1450 },
+        { name: "ハイパーボール4", min: 1230 },
+        { name: "ハイパーボール3", min: 1010 },
+        { name: "ハイパーボール2", min: 860 },
+        { name: "ハイパーボール1", min: 710 },
+        { name: "スーパーボール4", min: 600 },
+        { name: "スーパーボール3", min: 490 },
+        { name: "スーパーボール2", min: 420 },
+        { name: "スーパーボール1", min: 355 },
+        { name: "モンスターボール4", min: 300 },
+        { name: "モンスターボール3", min: 245 },
+        { name: "モンスターボール2", min: 195 },
+        { name: "モンスターボール1", min: 145 },
+        { name: "ビギナー4", min: 95 },
+        { name: "ビギナー3", min: 50 },
+        { name: "ビギナー2", min: 20 },
+        { name: "ビギナー1", min: 0 }
+      ];
+      for (let rank of ranks) {
+        if (p >= rank.min) return rank.min;
+      }
+      return 0;
+    }
+  </script>
+</body>
+</html>
