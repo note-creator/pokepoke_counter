@@ -3,43 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <title>ポケポケ勝敗カウンター</title>
+  <style>
+    body {
+      background-color: transparent;
+      font-family: sans-serif;
+      color: white;
+    }
+    #compactView {
+      font-size: 32px;
+      font-weight: bold;
+      padding: 10px;
+    }
+    .section {
+      margin-bottom: 10px;
+    }
+    button {
+      font-size: 16px;
+      margin: 5px;
+      padding: 8px 12px;
+    }
+    input {
+      font-size: 16px;
+      padding: 5px;
+    }
+  </style>
 </head>
 <body>
   <h1>ポケポケ勝敗カウンター</h1>
 
-  <label>初期ポイント: <input type="number" id="startPoint" value="1000"></label>
-  <button onclick="setStartPoint()">設定</button>
+  <div class="section">
+    <label>初期ポイント: <input type="number" id="startPoint" value="1000"></label>
+    <button onclick="setStartPoint()">設定</button>
+  </div>
 
-  <p id="currentPoint">現在のポイント: 1000</p>
-  <p id="rankName">現在のランク: マスターボール</p>
-  <p id="compactView">1000Pt（マスターボール）</p>
+  <div class="section">
+    <p id="currentPoint">現在のポイント: 1000</p>
+    <p id="rankName">現在のランク: マスターボール</p>
+    <p id="matchStats">対戦数: 0｜勝ち: 0｜負け: 0｜引き分け: 0｜勝率: 0%</p>
+    <p id="streakStats">連勝数: 0｜最大連勝数: 0</p>
+  </div>
 
-  <button onclick="win()">勝ち</button>
-  <button onclick="lose()">負け</button>
-  <button onclick="draw()">引き分け</button>
+  <div class="section">
+    <p id="compactView">0勝 0敗 0分 0連勝 最大0連勝 0.0% 全0戦｜1000Pt（マスターボール）</p>
+  </div>
 
+  <div class="section">
+    <button onclick="win()">勝ち</button>
+    <button onclick="lose()">負け</button>
+    <button onclick="draw()">引き分け</button>
+    <button onclick="undo()">戻る</button>
+  </div>
   <script>
     let point = 1000;
     let winStreak = 0;
+    let maxStreak = 0;
+    let wins = 0;
+    let losses = 0;
+    let draws = 0;
+    let history = [];
 
     function setStartPoint() {
       point = parseInt(document.getElementById('startPoint').value);
       winStreak = 0;
+      maxStreak = 0;
+      wins = 0;
+      losses = 0;
+      draws = 0;
+      history = [];
       updateDisplay();
     }
 
     function win() {
+      saveHistory();
       winStreak++;
-      let bonus = 0;
-      if (winStreak >= 2) bonus = (winStreak - 1) * 3;
+      if (winStreak > maxStreak) maxStreak = winStreak;
+      let bonus = winStreak >= 2 ? (winStreak - 1) * 3 : 0;
       point += 10 + bonus;
+      wins++;
       updateDisplay();
     }
 
     function lose() {
+      saveHistory();
       const rank = getRankName(point);
       if (rank.startsWith("ビギナー")) {
-        // 変動なし
+        // no change
       } else if (rank.startsWith("モンスターボール") || rank.startsWith("スーパーボール")) {
         point -= 5;
       } else if (rank.startsWith("ハイパーボール")) {
@@ -48,20 +96,48 @@
         point -= 10;
       }
       winStreak = 0;
-      point = Math.max(point, getRankMin(point)); // 降格防止
+      point = Math.max(point, getRankMin(point));
+      losses++;
       updateDisplay();
     }
 
     function draw() {
+      saveHistory();
       winStreak = 0;
+      draws++;
       updateDisplay();
     }
 
+    function undo() {
+      if (history.length > 0) {
+        const last = history.pop();
+        point = last.point;
+        winStreak = last.winStreak;
+        maxStreak = last.maxStreak;
+        wins = last.wins;
+        losses = last.losses;
+        draws = last.draws;
+        updateDisplay();
+      }
+    }
+
+    function saveHistory() {
+      history.push({
+        point, winStreak, maxStreak, wins, losses, draws
+      });
+    }
     function updateDisplay() {
       const rank = getRankName(point);
+      const total = wins + losses + draws;
+      const winRate = (wins + losses > 0) ? (wins / (wins + losses) * 100).toFixed(1) : "0.0";
       document.getElementById('currentPoint').textContent = `現在のポイント: ${point}`;
       document.getElementById('rankName').textContent = `現在のランク: ${rank}`;
-      document.getElementById('compactView').textContent = `${point}Pt（${rank}）`;
+      document.getElementById('matchStats').textContent =
+        `対戦数: ${total}｜勝ち: ${wins}｜負け: ${losses}｜引き分け: ${draws}｜勝率: ${winRate}%`;
+      document.getElementById('streakStats').textContent =
+        `連勝数: ${winStreak}｜最大連勝数: ${maxStreak}`;
+      document.getElementById('compactView').textContent =
+        `${wins}勝 ${losses}敗 ${draws}分 ${winStreak}連勝 最大${maxStreak}連勝 ${winRate}% 全${total}戦｜${point}Pt（${rank}）`;
     }
 
     function getRankName(p) {
@@ -115,6 +191,8 @@
       }
       return 0;
     }
+
+    updateDisplay(); // 初期表示
   </script>
 </body>
 </html>
