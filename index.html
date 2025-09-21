@@ -40,12 +40,15 @@
   <h1>ポケポケ勝敗カウンター</h1>
 
   <div class="section">
-  <label for="startPoint">初期ポイント:</label>
+  <label for="startPoint" style="color: black;">初期ポイント:</label>
   <input type="number" id="startPoint" value="1000" style="width: 80px;">
-  <span>Pt</span>
+  <span style="color: black;">Pt</span>
   <button onclick="setStartPoint()">設定</button>
   </div>
-
+  
+  <p style="text-align: center; color: black; font-size: 14px;">
+    勝ち・負け・引き分けを記録し、連勝数やランクに応じてポイントが変動します。戻る・リセット機能付き。
+  </p>
 
   <div class="section">
     <!--<p id="currentPoint">現在のポイント: 1000</p>-->
