@@ -4,17 +4,22 @@
   <meta charset="UTF-8">
   <title>ポケポケ勝敗カウンター</title>
   <style>
+    h1 {
+      color: black;
+    }
+
     body {
       background-color: white;
       font-family: sans-serif;
       color: white;
     }
-    #compactView {
+    #compactViewLine1, #compactViewLine2 {
       font-size: 32px;
       font-weight: bold;
-      padding: 10px;
+      text-align: center;
       color: black;
-      background-color: transparent; /* 完全透過 */
+      background-color: transparent;
+      margin: 0;
     }
 
     .section {
@@ -35,19 +40,23 @@
   <h1>ポケポケ勝敗カウンター</h1>
 
   <div class="section">
-    <label>初期ポイント: <input type="number" id="startPoint" value="1000"></label>
-    <button onclick="setStartPoint()">設定</button>
+  <label for="startPoint">初期ポイント:</label>
+  <input type="number" id="startPoint" value="1000" style="width: 80px;">
+  <span>Pt</span>
+  <button onclick="setStartPoint()">設定</button>
+  </div>
+
+
+  <div class="section">
+    <!--<p id="currentPoint">現在のポイント: 1000</p>-->
+    <!--<p id="rankName">現在のランク: マスターボール</p>-->
+    <!--<p id="matchStats">対戦数: 0｜勝ち: 0｜負け: 0｜引き分け: 0｜勝率: 0%</p>-->
+    <!--<p id="streakStats">連勝数: 0｜最大連勝数: 0</p>-->
   </div>
 
   <div class="section">
-    <p id="currentPoint">現在のポイント: 1000</p>
-    <p id="rankName">現在のランク: マスターボール</p>
-    <p id="matchStats">対戦数: 0｜勝ち: 0｜負け: 0｜引き分け: 0｜勝率: 0%</p>
-    <p id="streakStats">連勝数: 0｜最大連勝数: 0</p>
-  </div>
-
-  <div class="section">
-    <p id="compactView">全0戦 0勝 0敗 0分 0連勝 最大0連勝 0.0%｜1000Pt（マスターボール）</p>
+    <p id="compactViewLine1">全0戦 0勝 0敗 0分 0連勝 最大0連勝 0.0%</p>
+    <p id="compactViewLine2">1000Pt（ハイパーボール2）</p>
   </div>
 
   <div class="section">
@@ -152,8 +161,10 @@
         `対戦数: ${total}｜勝ち: ${wins}｜負け: ${losses}｜引き分け: ${draws}｜勝率: ${winRate}%`;
       document.getElementById('streakStats').textContent =
         `連勝数: ${winStreak}｜最大連勝数: ${maxStreak}`;
-      document.getElementById('compactView').textContent =
-        `全${total}戦 ${wins}勝 ${losses}敗 ${draws}分 ${winStreak}連勝 最大${maxStreak}連勝 ${winRate}%｜${point}Pt（${rank}）`;
+      document.getElementById('compactViewLine1').textContent =
+        `全${total}戦 ${wins}勝 ${losses}敗 ${draws}分 ${winStreak}連勝 最大${maxStreak}連勝 ${winRate}%`;
+      document.getElementById('compactViewLine2').textContent =
+        `${point}Pt（${rank}）`;
     }
 
     function getRankName(p) {
