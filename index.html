@@ -15,7 +15,6 @@
       padding: 10px;
       color: black;
       background-color: transparent; /* 完全透過 */
-      text-shadow: none; /* 縁取り風の影 */
     }
 
     .section {
@@ -48,7 +47,7 @@
   </div>
 
   <div class="section">
-    <p id="compactView">0勝 0敗 0分 0連勝 最大0連勝 0.0% 全0戦｜1000Pt（マスターボール）</p>
+    <p id="compactView">全0戦 0勝 0敗 0分 0連勝 最大0連勝 0.0%｜1000Pt（マスターボール）</p>
   </div>
 
   <div class="section">
@@ -141,7 +140,7 @@
       document.getElementById('streakStats').textContent =
         `連勝数: ${winStreak}｜最大連勝数: ${maxStreak}`;
       document.getElementById('compactView').textContent =
-        `${wins}勝 ${losses}敗 ${draws}分 ${winStreak}連勝 最大${maxStreak}連勝 ${winRate}% 全${total}戦｜${point}Pt（${rank}）`;
+        `全${total}戦 ${wins}勝 ${losses}敗 ${draws}分 ${winStreak}連勝 最大${maxStreak}連勝 ${winRate}%｜${point}Pt（${rank}）`;
     }
 
     function getRankName(p) {
