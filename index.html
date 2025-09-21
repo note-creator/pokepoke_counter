@@ -55,6 +55,7 @@
     <button onclick="lose()">負け</button>
     <button onclick="draw()">引き分け</button>
     <button onclick="undo()">戻る</button>
+    <button onclick="resetAll()">リセット</button>
   </div>
   <script>
     let point = 1000;
@@ -64,6 +65,18 @@
     let losses = 0;
     let draws = 0;
     let history = [];
+
+    function resetAll() {
+      point = parseInt(document.getElementById('startPoint').value);
+      winStreak = 0;
+      maxStreak = 0;
+      wins = 0;
+      losses = 0;
+      draws = 0;
+      history = [];
+      updateDisplay();
+    }
+
 
     function setStartPoint() {
       point = parseInt(document.getElementById('startPoint').value);
